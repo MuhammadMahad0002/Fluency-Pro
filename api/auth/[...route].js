@@ -31,6 +31,14 @@ module.exports = async (req, res) => {
     res.setHeader(key, value);
   });
 
+  // Check required environment variables
+  if (!process.env.MONGODB_URI) {
+    return res.status(500).json({ message: 'Server misconfigured: MONGODB_URI environment variable is not set' });
+  }
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ message: 'Server misconfigured: JWT_SECRET environment variable is not set' });
+  }
+
   const { route } = req.query;
   const routePath = Array.isArray(route) ? route.join('/') : route;
 
