@@ -47,21 +47,29 @@ const Dashboard = () => {
   }, []);
 
   const fetchData = async () => {
+    // Fetch each independently so one failure doesn't block the others
     try {
-      const [topicsRes, scoresRes, statsRes] = await Promise.all([
-        axios.get('/api/speech/topics'),
-        axios.get('/api/scores/top'),
-        axios.get('/api/scores/stats')
-      ]);
-      
-      setTopics(topicsRes.data.topics);
-      setTopScores(scoresRes.data.scores);
-      setStats(statsRes.data.stats);
+      const topicsRes = await axios.get('/api/speech/topics');
+      setTopics(topicsRes.data.topics || []);
     } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error fetching topics:', error);
     }
+
+    try {
+      const scoresRes = await axios.get('/api/scores/top');
+      setTopScores(scoresRes.data.scores || []);
+    } catch (error) {
+      console.error('Error fetching scores:', error);
+    }
+
+    try {
+      const statsRes = await axios.get('/api/scores/stats');
+      setStats(statsRes.data.stats || null);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+
+    setLoading(false);
   };
 
   const handleStartPractice = () => {
