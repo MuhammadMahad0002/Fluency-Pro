@@ -39,8 +39,9 @@ module.exports = async (req, res) => {
     return res.status(500).json({ message: 'Server misconfigured: JWT_SECRET environment variable is not set' });
   }
 
-  const { route } = req.query;
-  const routePath = Array.isArray(route) ? route.join('/') : route;
+  // Parse route from URL path (more reliable than req.query.route with Vercel rewrites)
+  const urlPath = req.url.split('?')[0];
+  const routePath = urlPath.replace(/^\/api\/auth\/?/, '');
 
   try {
     await connectToDatabase();

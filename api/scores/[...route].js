@@ -31,8 +31,9 @@ module.exports = async (req, res) => {
     return res.status(auth.status).json({ message: auth.error });
   }
 
-  const { route } = req.query;
-  const routePath = Array.isArray(route) ? route.join('/') : (route || '');
+  // Parse route from URL path (more reliable than req.query.route with Vercel rewrites)
+  const urlPath = req.url.split('?')[0];
+  const routePath = urlPath.replace(/^\/api\/scores\/?/, '');
 
   try {
     await connectToDatabase();
