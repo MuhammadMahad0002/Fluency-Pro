@@ -82,6 +82,7 @@ const PracticePage = () => {
     if (topic && duration) {
       fetchSpeech();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topic, duration]);
 
   // Cleanup on unmount
@@ -606,7 +607,7 @@ const PracticePage = () => {
     
     // Calculate results with improved scoring formula
     const skippedCount = skippedCountRef.current;
-    const wrongWords = totalWords - finalMatchedWords - skippedCount;
+    const _wrongWords = totalWords - finalMatchedWords - skippedCount; // eslint-disable-line no-unused-vars
     
     // 1. Time Score (0-30 points) - faster completion = higher score
     let calculatedTimeScore = 0;
